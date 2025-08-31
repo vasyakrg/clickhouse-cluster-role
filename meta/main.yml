@@ -5,6 +5,7 @@ galaxy_info:
   company: "Realmanual.ru"
   license: MIT
   min_ansible_version: "2.9"
+  role_name: clickhouse_cluster
   platforms:
     - name: Ubuntu
       versions:
