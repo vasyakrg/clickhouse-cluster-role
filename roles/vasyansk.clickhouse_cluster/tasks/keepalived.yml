@@ -1,0 +1,35 @@
+---
+# Keepalived installation and configuration tasks
+
+- name: Install Keepalived package
+  package:
+    name: keepalived
+    state: present
+
+- name: Create Keepalived configuration directory
+  file:
+    path: /etc/keepalived
+    state: directory
+    mode: "0755"
+
+- name: Configure Keepalived
+  template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart keepalived
+
+- name: Enable Keepalived service (create systemd unit)
+  systemd:
+    name: keepalived
+    enabled: yes
+    daemon_reload: yes
+  ignore_errors: true
+
+- name: Start Keepalived service
+  systemd:
+    name: keepalived
+    state: started
+  ignore_errors: true

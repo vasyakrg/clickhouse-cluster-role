@@ -1,0 +1,37 @@
+---
+# ClickHouse Cluster Role Variables
+
+# Package names for different distributions
+clickhouse_packages:
+  Debian:
+    - clickhouse-server
+    - clickhouse-client
+  RedHat:
+    - clickhouse-server
+    - clickhouse-client
+
+keeper_packages:
+  Debian:
+    - clickhouse-keeper
+  RedHat:
+    - clickhouse-keeper
+
+# Service names
+clickhouse_service: clickhouse-server
+keeper_service: clickhouse-keeper
+haproxy_service: haproxy
+keepalived_service: keepalived
+
+# Configuration file paths
+clickhouse_config_file: "{{ clickhouse_config_dir }}/config.xml"
+keeper_config_file: /etc/clickhouse-keeper/config.xml
+haproxy_config_file: /etc/haproxy/haproxy.cfg
+keepalived_config_file: /etc/keepalived/keepalived.conf
+
+# Memory conversion factors
+memory_factors:
+  B: 1
+  KB: 1024
+  MB: 1048576
+  GB: 1073741824
+  TB: 1099511627776

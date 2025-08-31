@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<clickhouse>
+    <profiles>
+        <default>
+            <max_memory_usage>{{ clickhouse_max_memory_usage_bytes }}</max_memory_usage>
+            <max_memory_usage_for_user>{{ clickhouse_max_memory_usage_bytes }}</max_memory_usage_for_user>
+        </default>
+    </profiles>
+
+    <users>
+        <{{ clickhouse_user }}>
+            <password></password>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+            <access_management>1</access_management>
+        </{{ clickhouse_user }}>
+
+        {% for user in clickhouse_users %}
+        <{{ user.name }}>
+            <password>{{ user.password }}</password>
+            <networks>
+                {% for network in user.networks %}
+                <ip>{{ network }}</ip>
+                {% endfor %}
+            </networks>
+            <profile>{{ user.profile | default('default') }}</profile>
+            <quota>{{ user.quota | default('default') }}</quota>
+            <access_management>{{ user.access_management | default(1) }}</access_management>
+        </{{ user.name }}>
+        {% endfor %}
+    </users>
+
+    <quotas>
+        <default>
+            <interval>
+                <duration>3600</duration>
+                <queries>0</queries>
+                <errors>0</errors>
+                <result_rows>0</result_rows>
+                <read_rows>0</read_rows>
+                <execution_time>0</execution_time>
+            </interval>
+        </default>
+    </quotas>
+</clickhouse>

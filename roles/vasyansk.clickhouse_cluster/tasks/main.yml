@@ -1,0 +1,26 @@
+---
+# Main tasks file for ClickHouse Cluster role
+
+- name: Include ClickHouse installation tasks
+  include_tasks: clickhouse.yml
+  tags: clickhouse
+
+- name: Include TLS configuration tasks
+  include_tasks: tls.yml
+  when: tls_enabled
+  tags: tls
+
+- name: Include Keeper installation tasks
+  include_tasks: keeper.yml
+  when: keeper_enabled
+  tags: keeper
+
+- name: Include HAProxy installation tasks
+  include_tasks: haproxy.yml
+  when: haproxy_enabled
+  tags: haproxy
+
+- name: Include Keepalived installation tasks
+  include_tasks: keepalived.yml
+  when: keepalived_enabled
+  tags: keepalived

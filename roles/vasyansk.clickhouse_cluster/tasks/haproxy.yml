@@ -1,0 +1,35 @@
+---
+# HAProxy installation and configuration tasks
+
+- name: Install HAProxy package
+  package:
+    name: haproxy
+    state: present
+
+- name: Enable HAProxy service (create systemd unit)
+  systemd:
+    name: haproxy
+    enabled: yes
+    daemon_reload: yes
+  ignore_errors: true
+
+- name: Create HAProxy configuration directory
+  file:
+    path: /etc/haproxy
+    state: directory
+    mode: "0755"
+
+- name: Configure HAProxy
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart haproxy
+
+- name: Start HAProxy service
+  systemd:
+    name: haproxy
+    state: started
+  ignore_errors: true

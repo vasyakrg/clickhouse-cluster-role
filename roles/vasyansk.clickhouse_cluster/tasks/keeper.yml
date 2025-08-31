@@ -1,0 +1,41 @@
+---
+# ClickHouse Keeper installation and configuration tasks
+
+- name: Install ClickHouse Keeper package
+  package:
+    name: clickhouse-keeper
+    state: present
+
+- name: Create Keeper directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    mode: "0755"
+  loop:
+    - "/var/lib/clickhouse-keeper"
+    - "/var/log/clickhouse-keeper"
+    - "/etc/clickhouse-keeper"
+
+- name: Configure ClickHouse Keeper
+  template:
+    src: keeper-config.xml.j2
+    dest: "/etc/clickhouse-keeper/config.xml"
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    mode: "0644"
+  notify: restart keeper
+
+- name: Enable ClickHouse Keeper service (create systemd unit)
+  systemd:
+    name: clickhouse-keeper
+    enabled: yes
+    daemon_reload: yes
+  ignore_errors: true
+
+- name: Start ClickHouse Keeper service
+  systemd:
+    name: clickhouse-keeper
+    state: started
+  ignore_errors: true

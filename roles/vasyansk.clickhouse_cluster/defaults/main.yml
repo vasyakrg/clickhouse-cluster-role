@@ -1,0 +1,61 @@
+# ClickHouse Cluster Role Default Variables
+
+# ClickHouse Configuration
+clickhouse_version: "25.8.1.5101"
+clickhouse_user: "clickhouse"
+clickhouse_group: "clickhouse"
+clickhouse_data_dir: "/var/lib/clickhouse"
+clickhouse_log_dir: "/var/log/clickhouse"
+clickhouse_config_dir: "/etc/clickhouse-server"
+
+# Cluster Configuration
+clickhouse_cluster_name: "clickhouse_cluster"
+
+# Network Configuration
+clickhouse_http_port: 8123
+clickhouse_tcp_port: 9000
+clickhouse_interserver_port: 9009
+
+# Zookeeper/Keeper Configuration
+keeper_enabled: true
+keeper_port: 9181
+keeper_raft_port: 9234
+
+# HAProxy Configuration
+haproxy_enabled: true
+haproxy_stats_port: 8404
+haproxy_frontend_http_port: 8124
+haproxy_frontend_tcp_port: 9001
+
+# Keepalived Configuration
+keepalived_enabled: false
+keepalived_virtual_ip: "192.168.1.100"
+keepalived_interface: "eth0"
+keepalived_priority: 100
+
+# TLS Configuration
+tls_enabled: false
+tls_cert_path: "files/clickhouse.crt"
+tls_key_path: "files/clickhouse.key"
+tls_ca_path: "files/ca.crt"
+
+# Resource Limits
+clickhouse_max_memory_usage: "8GB"
+clickhouse_max_concurrent_queries: 100
+
+# User Management
+clickhouse_users: []
+# Example:
+# clickhouse_users:
+#   - name: "admin"
+#     password: "admin_password"
+#     profile: "default"
+#     quota: "default"
+#     networks:
+#       - "::/0"
+#   - name: "readonly"
+#     password: "readonly_password"
+#     profile: "readonly"
+#     quota: "default"
+#     networks:
+#       - "192.168.1.0/24"

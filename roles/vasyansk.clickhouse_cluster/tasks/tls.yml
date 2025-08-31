@@ -1,0 +1,60 @@
+---
+# TLS configuration tasks for ClickHouse
+
+- name: Check if TLS certificates exist
+  stat:
+    path: "{{ item }}"
+  register: tls_files
+  loop:
+    - "{{ tls_cert_path }}"
+    - "{{ tls_key_path }}"
+    - "{{ tls_ca_path }}"
+
+- name: Fail if TLS certificates are missing
+  fail:
+    msg: "TLS certificates not found. Please place the following files in the 'files/' directory: {{ tls_cert_path }}, {{ tls_key_path }}, {{ tls_ca_path }}"
+  when: not tls_files.results[0].stat.exists or not tls_files.results[1].stat.exists or not tls_files.results[2].stat.exists
+
+- name: Create SSL certificates directory
+  file:
+    path: /etc/ssl/certs
+    state: directory
+    mode: "0755"
+
+- name: Create SSL private keys directory
+  file:
+    path: /etc/ssl/private
+    state: directory
+    mode: "0700"
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+
+- name: Copy SSL certificate
+  copy:
+    src: "{{ tls_cert_path }}"
+    dest: /etc/ssl/certs/clickhouse.crt
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    mode: "0644"
+
+- name: Copy SSL private key
+  copy:
+    src: "{{ tls_key_path }}"
+    dest: /etc/ssl/private/clickhouse.key
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    mode: "0600"
+
+- name: Copy CA certificate
+  copy:
+    src: "{{ tls_ca_path }}"
+    dest: /etc/ssl/certs/ca.crt
+    owner: "{{ clickhouse_user }}"
+    group: "{{ clickhouse_group }}"
+    mode: "0644"
+
+- name: Restart ClickHouse to apply TLS configuration
+  systemd:
+    name: clickhouse-server
+    state: restarted
+  when: tls_enabled

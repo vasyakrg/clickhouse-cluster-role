@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<clickhouse>
+    <logger>
+        <level>trace</level>
+        <log>/var/log/clickhouse-keeper/clickhouse-keeper.log</log>
+        <errorlog>/var/log/clickhouse-keeper/clickhouse-keeper.err.log</errorlog>
+        <size>1000M</size>
+        <count>10</count>
+    </logger>
+
+    <keeper_server>
+        <tcp_port>{{ keeper_port }}</tcp_port>
+        <server_id>{{ ansible_play_hosts.index(inventory_hostname) + 1 }}</server_id>
+        <listen_host>::</listen_host>
+        <log_storage_path>/var/lib/clickhouse-keeper/coordination/logs</log_storage_path>
+        <snapshot_storage_path>/var/lib/clickhouse-keeper/coordination/snapshots</snapshot_storage_path>
+
+        <coordination_settings>
+            <operation_timeout_ms>10000</operation_timeout_ms>
+            <session_timeout_ms>30000</session_timeout_ms>
+            <dead_session_check_period_ms>500</dead_session_check_period_ms>
+            <heart_beat_interval_ms>500</heart_beat_interval_ms>
+            <election_timeout_lower_bound_ms>1000</election_timeout_lower_bound_ms>
+            <election_timeout_upper_bound_ms>2000</election_timeout_upper_bound_ms>
+            <reserved_logs>20</reserved_logs>
+            <snapshot_distance>100</snapshot_distance>
+            <auto_forwarding>true</auto_forwarding>
+            <shutdown_timeout>5000</shutdown_timeout>
+            <startup_timeout>30000</startup_timeout>
+        </coordination_settings>
+
+        <raft_configuration>
+            {% for host in groups['clickhouse_cluster'] %}
+            <server>
+                <id>{{ loop.index }}</id>
+                <hostname>{{ host }}</hostname>
+                <port>{{ keeper_port }}</port>
+                <can_become_leader>true</can_become_leader>
+            </server>
+            {% endfor %}
+        </raft_configuration>
+    </keeper_server>
+</clickhouse>

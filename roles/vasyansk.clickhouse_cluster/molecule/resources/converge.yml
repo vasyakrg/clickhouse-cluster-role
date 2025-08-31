@@ -1,0 +1,14 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include clickhouse_cluster role
+      include_role:
+        name: clickhouse_cluster
+      vars:
+        clickhouse_version: "latest"
+        keeper_enabled: false
+        haproxy_enabled: false
+        keepalived_enabled: false
+        tls_enabled: false

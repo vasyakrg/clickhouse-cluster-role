@@ -1,0 +1,30 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: ubuntu-20.04
+    image: ubuntu:20.04
+    pre_build_image: true
+    cgroupns_mode: host
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    ansible_connection: docker
+  - name: centos-8
+    image: quay.io/centos/centos:8
+    pre_build_image: true
+    cgroupns_mode: host
+    command: ${MOLECULE_DOCKER_COMMAND:-""}
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    ansible_connection: docker
+provisioner:
+  name: ansible
+  playbooks:
+    converge: ../resources/converge.yml
+verifier:
+  name: ansible

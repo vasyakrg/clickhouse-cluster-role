@@ -1,0 +1,24 @@
+---
+# Handlers for ClickHouse Cluster role
+
+- name: restart clickhouse
+  service:
+    name: clickhouse-server
+    state: restarted
+
+- name: restart keeper
+  service:
+    name: clickhouse-keeper
+    state: restarted
+
+- name: restart haproxy
+  systemd:
+    name: haproxy
+    state: restarted
+    daemon_reload: yes
+
+- name: restart keepalived
+  systemd:
+    name: keepalived
+    state: restarted
+    daemon_reload: yes

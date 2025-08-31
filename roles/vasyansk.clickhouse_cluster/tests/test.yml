@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Test role syntax
+      ansible.builtin.import_role:
+        name: clickhouse_cluster
+      vars:
+        clickhouse_version: "latest"
+        keeper_enabled: false
+        haproxy_enabled: false
+        keepalived_enabled: false
+        tls_enabled: false
