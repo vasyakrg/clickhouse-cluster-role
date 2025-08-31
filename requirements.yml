@@ -1,7 +1,0 @@
----
-# Requirements file for clickhouse_cluster role
-# This file can be used to install the role from Ansible Galaxy
-# ansible-galaxy install -r requirements.yml
-
-- src: vasyansk.clickhouse_cluster
-  version: "1.0.0"
